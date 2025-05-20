@@ -2,26 +2,32 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 
-st.title("🗺️ 나만의 위치 북마크 지도")
+st.title("Streamlit + Folium 인터랙티브 지도 앱")
 
-st.write("아래에 장소 정보를 입력하고 지도에 표시해보세요!")
+# 기본 지도 위치(서울)
+default_lat = 37.5665
+default_lon = 126.9780
 
-# 장소 입력
-place = st.text_input("장소 이름", value="서울 시청")
-lat = st.number_input("위도 (Latitude)", value=37.5665, format="%.6f")
-lon = st.number_input("경도 (Longitude)", value=126.9780, format="%.6f")
+st.write("지도에서 원하는 위치를 클릭하면 마커가 표시됩니다.")
 
-# 세션 상태 저장
-if "places" not in st.session_state:
-    st.session_state.places = []
+# 지도 생성
+m = folium.Map(location=[default_lat, default_lon], zoom_start=12)
 
-if st.button("지도에 추가하기"):
-    st.session_state.places.append((place, lat, lon))
+# Streamlit에서 지도 클릭 이벤트 감지 및 마커 추가
+map_data = st_folium(m, width=700, height=500)
 
-# 지도 그리기
-m = folium.Map(location=[37.5665, 126.9780], zoom_start=6)
-for name, lat, lon in st.session_state.places:
-    folium.Marker([lat, lon], tooltip=name).add_to(m)
+if map_data and map_data["last_clicked"]:
+    clicked_lat = map_data["last_clicked"]["lat"]
+    clicked_lon = map_data["last_clicked"]["lng"]
+    st.success(f"클릭한 위치: 위도 {clicked_lat:.5f}, 경도 {clicked_lon:.5f}")
 
-st_folium(m, width=700, height=500)
+    # 마커 추가
+    m = folium.Map(location=[clicked_lat, clicked_lon], zoom_start=15)
+    folium.Marker([clicked_lat, clicked_lon], popup="여기!").add_to(m)
+    st_folium(m, width=700, height=500)
 
+else:
+    st.info("지도를 클릭해보세요!")
+
+st.write("---")
+st.write("이 앱은 folium+streamlit-folium을 사용하여 동작합니다.")
