@@ -1,3 +1,4 @@
 plotly
 folium
 koreanize_matplotlib
+from streamlit_folium import st_folium
