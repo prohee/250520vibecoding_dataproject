@@ -6,7 +6,7 @@ st.set_page_config(layout="wide", page_title="세계지리 데이터 분석")
 
 # 사이드바 메뉴
 page = st.sidebar.radio(
-    "페이지 선택",
+    "원하는 정보를 선택하세요",
     ["세계 지도(인구·면적·밀도)", "대륙별 통계·상관관계 분석"]
 )
 
